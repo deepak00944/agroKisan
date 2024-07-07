@@ -17,8 +17,8 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 import warnings
-from sklearn.exceptions import InconsistentVersionWarning
-warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
+# from sklearn.exceptions import InconsistentVersionWarning
+# warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
 app = Flask(__name__, static_folder=r"static")
 
