@@ -78,3 +78,12 @@ tl.to("#page2-content>p",{
     }
 }, "anim1")
 
+
+document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.getElementById('nav-toggle');
+    const navPrt2 = document.getElementById('nav-prt2');
+
+    navToggle.addEventListener('click', function() {
+        navPrt2.classList.toggle('show');
+    });
+});

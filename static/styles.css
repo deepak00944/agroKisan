@@ -35,6 +35,7 @@ a{
     min-height: 100vh;
     position: relative;
     padding: 1px;
+    overflow: hidden;
 }
 
 #nav {
@@ -358,4 +359,159 @@ button:hover #btn-in {
     color: #fff;
     font-weight: 400;
 }
+
+#nav {
+    padding: 0 10px;
+    height: 60px;
+    /* position: relative; */
+}
+
+#nav h1 {
+    font-size: 4vw;
+    padding: 8px 15px;
+    width: auto;
+}
+
+#nav img {
+    height: 6vw;
+}
+
+#nav-toggle {
+    display: block;
+    font-size: 30px;
+    color: #fff;
+    background-color: #51733F;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#nav-prt2 {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: #F5F5EB;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+#nav-prt2.show {
+    display: flex;
+    flex-direction: column;
+}
+
+#nav-prt2 a, #nav-prt2 button {
+    font-size: 16px;
+    padding: 10px 15px;
+    margin: 5px 0;
+    text-align: center;
+}
+
+
+@media screen and (min-width: 768px) {
+    #nav {
+        height: 70px;
+    }
+
+    #nav h1 {
+        font-size: 2.5vw;
+    }
+
+    #nav img {
+        height: 4vw;
+    }
+
+    #nav-toggle {
+        display: none;
+    }
+
+    #nav-prt2 {
+        display: flex;
+        position: static;
+        width: auto;
+        background-color: transparent;
+        padding: 0;
+        box-shadow: none;
+        flex-direction: row;
+    }
+
+    #nav-prt2 a, #nav-prt2 button {
+        font-size: 2.5vw;
+        margin: 0 5px;
+    }
+    
+}
+
+@media only screen and (max-width: 600px) {
+    #gola{
+        margin-top: -80px;
+    }
+    #platform{
+        margin-top: 320px;
+    }
+    #hello1{
+        margin-top: -80px;
+    }
+    #hello2{
+        margin-top: -180px;
+    }
+    #page2-in{
+        margin-top: 100px;
+        height: 400px;
+    }
+    #page2-in>h1{
+        margin-top: 180px;
+        color: #000;
+        margin-left: 20px;
+    }
+    #page2-content>h1{
+        width: 60%;
+        padding: 0;
+    }
+    #features{
+        margin-top: -400px;
+    }
+    #feature>a{
+        /* font-size: 1rem; */
+    }
+    #contact_us{
+        height: 20vh;
+    }
+    #credit{
+        height: 20vh;
+    }
+    #credit>h3{
+        margin-top: -100px;
+        font-size: 1rem;
+    }
+  }
+
+/* Desktop styles */
+@media screen and (min-width: 1024px) {
+    #nav {
+        height: 85px;
+    }
+
+    #nav h1 {
+        font-size: 1.3vw;
+    }
+
+    #nav img {
+        height: 2.2vw;
+    }
+
+    #nav-prt2 a, #nav-prt2 button {
+        font-size: 1.3vw;
+    }
+   
+}
+
+
+
 

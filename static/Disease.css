@@ -120,6 +120,7 @@ a{
     width: 100%;
     background-image: linear-gradient(to bottom right, #2C6839, #193935, #2C6839);
     padding: 1px;
+    overflow: hidden;
 }
 
 #page2 #head{
@@ -161,3 +162,92 @@ form{
     margin-bottom: 10px;
 }
 
+@media (max-width: 1200px) {
+    #nav h1, #nav-prt2 a {
+        font-size: 2vw;
+    }
+    #nav img {
+        height: 3vw;
+    }
+    #intro > h1 {
+        font-size: 5vw;
+    }
+    #intro p {
+        width: 60vw;
+    }
+}
+
+@media (max-width: 992px) {
+    #right, #left {
+        width: 100%;
+    }
+    #nav h1, #nav-prt2 a {
+        font-size: 3vw;
+    }
+    #nav img {
+        height: 4vw;
+    }
+    #intro > h1 {
+        font-size: 6vw;
+    }
+    #intro p {
+        width: 70vw;
+    }
+}
+
+@media (max-width: 768px) {
+    #nav h1, #nav-prt2 a {
+        font-size: 4vw;
+    }
+    #nav img {
+        height: 5vw;
+    }
+    #intro > h1 {
+        font-size: 7vw;
+    }
+    #intro p {
+        width: 80vw;
+    }
+}
+
+@media (max-width: 576px) {
+    #logo{
+        background-color: #51733F;
+        width: 150px;
+        border-radius: 50px;
+    }
+    #nav img {
+        height: 6vw;
+    }
+    #intro > h1 {
+        font-size: 8vw;
+    }
+    #intro p {
+        width: 90vw;
+    }
+    #page2 #head {
+        margin: 50px auto;
+    }
+    #page2 > h2 {
+        margin-left: 0;
+        text-align: center;
+    }
+    .image-section{
+        margin-left: -100px;
+    }
+}
+
+@media (max-width: 375px) {
+    #nav h1, #nav-prt2 a {
+        font-size: 6vw;
+    }
+    #nav img {
+        height: 7vw;
+    }
+    #intro > h1 {
+        font-size: 9vw;
+    }
+    #intro p {
+        width: 95vw;
+    }
+}
