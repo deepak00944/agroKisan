@@ -17,15 +17,12 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 import warnings
-# from sklearn.exceptions import InconsistentVersionWarning
-# warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
 
 app = Flask(__name__, static_folder=r"static")
 
-model2 = tf.keras.models.load_model("best_plant_model.h5")
+model2 = tf.keras.models.load_model("Elastic_net.keras")
 data = pd.DataFrame(pd.read_csv("final.csv"))
-model = pickle.load(open(r"model.pkl", "rb"))
-crop = pd.read_csv(r"final_dataset.csv").copy()
+model = pickle.load(open(r"RandomForest.pkl", "rb"))
 area = pd.read_csv(r"final_data.csv")
 commodity = pd.read_csv(r"commodities1.csv")
 
@@ -37,96 +34,9 @@ def index():
 
 @app.route('/predictor')
 def predictor():
-    season = crop['Season'].unique()
-    return render_template('predictor.html', seasons=season)
-
-# Market
-
-# def now_final(state_name,district_name,market,commodity_name,trend,Datefrom,DateTo):
-#     commodity_code=commodity[commodity['Commodities']==commodity_name]['code'].unique()[0]
-#     state_short_name=area[area['State']==state_name]['State_code'].unique()[0]
-#     district_code=area[area['District']==district_name]['District_code'].unique()[0]
-#     market_code=area[area['Market']==market]['Market_code'].unique()[0]
-#     date_from=Datefrom
-#     date_to=DateTo
-#     commodity_name=commodity
-#     state_full_name=state_name
-#     district_full_name=district_name
-#     market_full_name=market
-
-#     r = requests.get(f"https://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity={commodity_code}&Tx_State={state_short_name}&Tx_District={district_code}&Tx_Market={market_code}&DateFrom={date_from}&DateTo={date_to}&Fr_Date={date_from}&To_Date={date_to}&Tx_Trend={trend}&Tx_CommodityHead={commodity_name}&Tx_StateHead={state_full_name}&Tx_DistrictHead={district_full_name}&Tx_MarketHead={market_full_name}")
-#     soup = bs(r.text, "html.parser")
-#     title = soup.find("h4")
-
-#     tables = soup.find_all("table", class_="tableagmark_new")
-#     for tn in range(len(tables)):
-#         table = tables[tn]
-
-#         # preinit list of lists
-#         rows = table.findAll("tr")
-#         row_lengths = [len(r.findAll(['th', 'td'])) for r in rows]
-#         ncols = max(row_lengths)
-#         nrows = len(rows)
-#         data = []
-
-#         print(ncols, nrows)
-#         for i in range(nrows):
-#             rowD = []
-#             for j in range(ncols):
-#                 rowD.append('')
-#             data.append(rowD)
-
-#         # process html
-#         for i in range(len(rows)):
-#             row = rows[i]
-#             cells = row.findAll(["td", "th"])
-#             j = 0  # Column index for data list
-
-#             if trend=="2":
-#                 for cell in cells:
-#                     rowspan = int(cell.get('rowspan', 1))
-#                     colspan = int(cell.get('colspan', 1))
-#                     cell_text = cell.text.strip()
+    return render_template('predictor.html')
 
 
-#                     while data[i][j]:
-#                         j += 1
-
-#                     for r in range(rowspan):
-#                         for c in range(colspan):
-#                             data[i + r][j + c] = cell_text
-
-#                     j += colspan
-#             if trend=="0":
-#                 if (i <= 50):
-#                     for cell in cells:
-#                         rowspan = int(cell.get('rowspan', 1))
-#                         colspan = int(cell.get('colspan', 1))
-#                         cell_text = cell.text.strip()
-
-
-#                         while data[i][j]:
-#                             j += 1
-
-#                         for r in range(rowspan):
-#                             for c in range(colspan):
-#                                 data[i + r][j + c] = cell_text
-
-#                         j += colspan
-
-#         #     print(data)
-#         df = pd.DataFrame(data)
-#         df.columns = df.iloc[0]
-#         df = df[1:]
-#         if trend=="0":
-#             df = df.drop(df.index[-2:], axis=0)
-
-#         if df.empty:
-#             df.loc[0] = "No Data Found"
-#         if trend=="0":
-#             df.drop(columns={"Sl no."}, inplace=True)
-#         # df.to_csv("pta.csv",index=False)
-#         return (df,title.text)
 
 def now_final(state_name, district_name, market, commodity_name, trend, Datefrom, DateTo):
     commodity_code = commodity[commodity['Commodities'] == commodity_name]['code'].unique()[0]
@@ -237,13 +147,7 @@ def price():
     Datefrom = request.form.get('from')
     DateTo = request.form.get('To')
     trend_code=0
-    # if trend=="Price":
-    #     trend_code=0
-    # elif trend=="Arrival":
-    #     trend_code=1
-    # else:
-    #     trend_code=2
-    # print(state_name,district_name,market,commodity_name,trend_code,Datefrom,DateTo)
+
     print(trend)
     final_data,heading=now_final(state_name,district_name,market,commodity_name,trend,Datefrom,DateTo)
     table_data = final_data.to_dict(orient='records')
