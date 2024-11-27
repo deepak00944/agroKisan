@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head xmlns="http://www.w3.org/1999/xhtml">
     <meta charset="UTF-8">
     <title>Crop Predictor</title>
@@ -7,114 +8,140 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-       
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+
 </head>
+
 <body>
-    <div id="loader">
+    <!-- <div id="loader">
         <img src="https://cdn.dribbble.com/users/1385017/screenshots/3518448/media/a4e10372b7543174af03860354561698.gif" height="100%" width="100%">
-    </div>
-    <div id="nav">
-        <a href="{{url_for('index')}} ">  <h1><img src="https://cdn-icons-png.flaticon.com/512/3377/3377932.png" alt=""> agroKisan </h1> </a>
-          <div id="nav-prt2">
-              <div id="contact_us">
-                  <a href="tel:+916261623713"> <i class="ri-whatsapp-line"></i> </a>
-                  <a href="https://www.instagram.com/_deepak094_/"><i class="ri-instagram-line"></i> </a> 
-                   <a href="https://twitter.com/deepak_094"><i class="ri-twitter-line"></i> </a>
-                  <a href="https://www.linkedin.com/in/deepak-singh-566787172/"><i class="ri-linkedin-box-line"></i> </a> 
-               </div>
-          </div>
-      </div>
-    <div id="main">
-    <div class="form">
-        <div class="side-img">
-            <img src="http://pngimg.com/uploads/wheat/wheat_PNG58.png" height="100%", width="100%">
-        </div>
-        <h1 class="title">Crop Recommendation System</h1>
-        <p id="description" >Please Enter the Required details</p>
-      
-        <form method="post" accept-charset="utf-8" name="Modelform">
-            <div id="first4">
-            <label>Enter the Potassium</label>
-            <input type="text" class="write-input" id="area" name="potassium"  placeholder="Potassium">
-           
-            <label>Enter the Nitrogen</label>
-            <input type="text" class="write-input" id="area" name="nitrogen"  placeholder="Nitrogen">
-
-            <label>Enter the Phosphorus</label>
-            <input type="text" class="write-input" id="area" name="phosphorus" placeholder="Phosphorus">
-
-            <label>Enter the Humidity</label>
-           <input type="text" class="write-input" id="area" name="humidity" placeholder="Humidity">
-        </div>
-        <div id="last3">
-             <label>Enter the Temperature </label>
-            <input type="text" class="write-input" id="temperature" name="temperature"
-                          placeholder="Temperature  ">
-    
-            <label>Enter the pH </label>
-              <input type="text" class="write-input" id="ph" name="ph"
-                                 placeholder="pH ">
-            <label>Enter the Rainfall</label>
-            <input type="text" class="write-input" id="rainfall" name="rainfall"
-                                        placeholder="Rainfall">                    
-    
-           <div class="bt">
-           <button class="glow-on-hover" onclick="send_data()">Predict Crop</button>
-           </div>
-        </div>
-        </form>
-        <div class="row">
-            <div class="out" style="text-align: center">
-                <h4><span id="prediction"></span></h4>
+    </div> -->
+    <header>
+        <div class="container">
+            <div id="branding">
+                <!-- <h1><span class="highlight">agro</span>किसान</h1> -->
+                <img src="../static/logo.png" alt="">
             </div>
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{url_for('index')}}">Home</a></li>
+                    <li class="current"><a href="{{url_for('predictor')}}">Crop Recommendation</a></li>
+                    <li><a href="{{url_for('disease')}}">Disease Prediction</a></li>
+                    <li><a href="{{url_for('market')}}">Market</a></li>
+                    <li ><a href="{{url_for('contact')}}">Contact Us</a></li>
+                </ul>
+            </nav>
         </div>
+    </header>
+    <div class="container">
+        <section class="info-section">
+            <h2>Crop Recommendation</h2>
+            <p>Our advanced crop recommendation system uses data-driven insights to suggest the best crops for your
+                land. By analyzing soil composition, climate conditions, and current market trends, we provide
+                personalized recommendations to maximize your yield and profit.</p>
+        </section>
+        <section class="form-section">
+            <h3>Enter Your Field Data</h3>
+            <form id="cropForm" method="post" accept-charset="utf-8" name="Modelform">
+                <div class="form-group">
+                    <label for="potassium">Potassium (K) Level:</label>
+                    <input type="number" id="potassium" name="potassium" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="nitrogen">Nitrogen (N) Level:</label>
+                    <input type="number" id="nitrogen" name="nitrogen" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="phosphorus">Phosphorus (P) Level:</label>
+                    <input type="number" id="phosphorus" name="phosphorus" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="humidity">Humidity:</label>
+                    <input type="number" id="humidity" name="humidity" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="temperature">Temperature (°C):</label>
+                    <input type="number" id="temperature" name="temperature" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="ph">pH Level (0-14):</label>
+                    <input type="number" id="ph" name="ph" step="0.1" min="0" max="14" required>
+                </div>
+                <div class="form-group">
+                    <label for="ph">Rainfall:</label>
+                    <input type="number" id="rainfall" name="rainfall" min="0" required>
+                </div>
+                <button type="submit" class="btn" onclick="send_data()">Get Recommendation</button>
+            </form>
+            <div class="row">
+                <div class="out" style="text-align: center">
+                    <h4><span id="prediction"></span></h4>
+                </div>
+            </div>
+        </section>
     </div>
-</div>
 
 
-<script>
-    
-    function form_handler(event) {
-        event.preventDefault(); // Don't submit the form normally
-    }
-    function send_data()
-    {
-        document.querySelector('form').addEventListener("submit",form_handler);
-
-        var fd=new FormData(document.querySelector('form'));
-
-        var xhr= new XMLHttpRequest({mozSystem: true});
-
-        xhr.open('POST','/predict',true);
-        document.getElementById('prediction').innerHTML="Wait! Predicting Crop.....";
-        xhr.onreadystatechange = function(){
-            if(xhr.readyState == XMLHttpRequest.DONE){
-                document.getElementById('prediction').innerHTML="Prediction: "+xhr.responseText;
-            }
-        };
-
-        xhr.onload= function(){};
-
-        xhr.send(fd);
-    }
-
-    
 
 
-</script>
+    <script>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-    crossorigin="anonymous"></script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('header nav');
+
+            hamburger.addEventListener('click', () => {
+                nav.classList.toggle('show');
+            });
+        });
+
+
+
+        function form_handler(event) {
+            event.preventDefault(); // Don't submit the form normally
+        }
+        function send_data() {
+            document.querySelector('form').addEventListener("submit", form_handler);
+
+            var fd = new FormData(document.querySelector('form'));
+
+            var xhr = new XMLHttpRequest({ mozSystem: true });
+
+            xhr.open('POST', '/predict', true);
+            document.getElementById('prediction').innerHTML = "Wait! Predicting Crop.....";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    document.getElementById('prediction').innerHTML = "Prediction: " + xhr.responseText;
+                }
+            };
+
+            xhr.onload = function () { };
+
+            xhr.send(fd);
+        }
+
+
+
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
 
 
 </body>
+
 </html>

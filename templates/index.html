@@ -13,76 +13,238 @@
 </head>
 
 <body>
-    <div id="nav">
-        <a href="{{url_for('index')}} "><h1><img src="https://cdn-icons-png.flaticon.com/512/3377/3377932.png" alt=""> agroKisan </h1></a>
-        <div id="nav-toggle">&#9776;</div>
-        <div id="nav-prt2">
-           <a href="#features"> <h4>Features</h4> </a> 
-            <!-- <h4>My Values</h4> -->
-           <a href="#page2-in"><h4>About us</h4></a> 
-            <button>
-                Contact
-                <div id="btn-in"></div>
-            </button>
-            <!-- <button>Button <span id="btn-in"></span></button> -->
-        </div>
-    </div>
-
-    <div id="main">
-        <div id="page1">
-            <h1 id="hello1">agro </h1>
-            <h1 id="hello2">Kisan</h1>
-            <img id="gola" src="https://cdn-icons-png.flaticon.com/512/3377/3377932.png" alt="">
-            <div id="platform">
-                <h1>"Cultivating Success <br> opportunity to problem, <br> Harvesting Prosperity"</h1>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <!-- <h1><span class="highlight">agro</span>किसान</h1> -->
+                <img src="../static/logo.png" alt="">
             </div>
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <nav>
+                <ul>
+                    <li class="current"><a href="{{url_for('index')}}">Home</a></li>
+                    <!-- <li ><a href="cropRecommendation.html">Crop Recommendation</a></li>
+                    <li ><a href="disease.html">Disease Prediction</a></li> -->
+                    <li><a href="#features">Services</a></li>
+                    <li><a href="{{url_for('contact')}}">Contact</a></li>
+                </ul>
+            </nav>
         </div>
-        <div id="page2">
-            <div id="page2-in">
-                <h1>What is <span>agroKisan.</span></h1>
-                <div id="page2-content">
-                    <h1>Always here to help</h1>
-                    <p>Agrokishan is your trusted partner in agriculture, providing a comprehensive platform that combines advanced technology with agricultural expertise. Our mission is to revolutionize farming practices and enhance crop productivity. <br> <br>
-                    </p>
+    </header>
+
+    <section id="showcase">
+        <div class="container">
+            <h1>Empowering Farmers with Technology</h1>
+            <p>Revolutionizing agriculture through smart solutions and data-driven insights</p>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="container">
+            <div class="feature">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="Crop Recommendation">
+                        <h3>Crop Recommendation</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>Get personalized crop recommendations based on soil conditions, climate, and market demand.
+                        </p>
+                        <a href="{{url_for('predictor')}}" class="button">Learn More</a>
+                    </div>
                 </div>
             </div>
-            <div id="features">
-                <div id="feature" >
-                    <a href="{{url_for('predictor')}} "> <h4>Crop Recomendation</h4> </a>
-                   <a href="{{url_for('disease')}}">   <h4>Disease Prediction</h4> </a>
-                    <a href="{{url_for('market')}}"> <h4>Market Prices</h4> </a>
-                    <a href="{{url_for('rainfall')}}"><h4>Rainfall</h4></a>
-                    <!-- <h4>Rainfall</h4> -->
+            <div class="feature">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <img src="https://images.unsplash.com/photo-1600697230088-4992c83b2804?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="Apple Disease Prediction">
+                        <h3>Apple Disease Prediction</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>Detect and prevent apple diseases early with our advanced image recognition technology.</p>
+                        <a href="{{url_for('disease')}}" class="button">Learn More</a>
+                    </div>
                 </div>
             </div>
-                
-
-            <div id="contact_us">
-               <a href="tel:+916261623713"> <i class="ri-whatsapp-line"></i> </a>
-               <a href="https://www.instagram.com/_deepak094_/"><i class="ri-instagram-line"></i> </a> 
-                <a href="https://twitter.com/deepak_094"><i class="ri-twitter-line"></i> </a>
-               <a href="https://www.linkedin.com/in/deepak-singh-566787172/"><i class="ri-linkedin-box-line"></i> </a> 
-            </div>
-            <div id="credit">
-                <h3>Made by Deepak and Naresh</h3>
+            <div class="feature">
+                <div class="feature-inner">
+                    <div class="feature-front">
+                        <img src="https://images.unsplash.com/photo-1611095973763-414019e72400?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                            alt="Real-time Market Prices">
+                        <h3>Real-time Market Prices</h3>
+                    </div>
+                    <div class="feature-back">
+                        <p>Stay updated with the latest commodity prices to make informed decisions about your harvest.
+                        </p>
+                        <a href="{{url_for('market')}}" class="button">Learn More</a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
+    <section id="news" class="news">
+        <div class="news-container">
+            <h2>Latest News</h2>
+            <div id="news-slider" class="news-slider"></div>
+        </div>
+    </section>
+
+    <section id="cta">
+        <div class="container">
+            <h2>Ready to transform your farming?</h2>
+            <a href="#" class="button">Get Started Now</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 agroKisan. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const features = document.querySelectorAll('.feature');
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('header nav');
+
+            features.forEach((feature, index) => {
+                feature.addEventListener('mouseenter', () => {
+                    const inner = feature.querySelector('.feature-inner');
+                    if (index % 2 === 0) {
+                        inner.style.transform = 'rotateY(180deg)';
+                    } else {
+                        inner.style.transform = 'rotateY(-180deg)';
+                    }
+                });
+
+                feature.addEventListener('mouseleave', () => {
+                    const inner = feature.querySelector('.feature-inner');
+                    inner.style.transform = 'rotateY(0deg)';
+                });
+            });
+
+            hamburger.addEventListener('click', () => {
+                nav.classList.toggle('show');
+            });
+
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    navLinks.forEach(navLink => navLink.parentElement.classList.remove('current'));
+                    this.parentElement.classList.add('current');
+                    if (window.innerWidth <= 768) {
+                        nav.classList.remove('show');
+                    }
+                });
+            });
+
+            const ctaButton = document.querySelector('#cta .button');
+            ctaButton.addEventListener('mouseover', function () {
+                this.style.backgroundColor = '#45a049';
+            });
+            ctaButton.addEventListener('mouseout', function () {
+                this.style.backgroundColor = '#4CAF50';
+            });
+        });
+
+    //     async function fetchNews() {
+    //     try {
+    //         const response = await fetch('http://127.0.0.1:5000/get-news');
+    //         const newsData = await response.json();
+
+    //         const newsSlider = document.getElementById('news-slider');
+    //         newsData.forEach(news => {
+    //             const newsCard = document.createElement('div');
+    //             newsCard.className = 'news-card';
+
+    //             newsCard.innerHTML = `
+    //                 <img src="${news.image_url}" alt="${news.label}">
+    //                 <div class="news-card-content">
+    //                     <h3>${news.label}</h3>
+    //                     <p>${news.text}</p>
+    //                 </div>
+    //             `;
+
+    //             newsSlider.appendChild(newsCard);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error fetching news:', error);
+    //     }
+    // }
+
+    // fetchNews();
     
-    <script src="https://code.jquery.com/jquery-3.7.0.js"
-        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lettering.js/0.6.1/jquery.lettering.min.js"
-        integrity="sha512-VJ/iYbiu1eJ6yLimfTi65t2R9TFcG5D9X8ZCfbbEFhTfPnKJh8byoKXEawi5ScJZBYL1eiirL1+MczZDx0Tz9Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/textillate@0.4.1/jquery.textillate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.1/gsap.min.js"
-        integrity="sha512-qF6akR/fsZAB4Co1QDDnUXWnaQseLGXoniuSuSlPQK6+aWhlMZcHzkasCSlnWoe+TJuudlka1/IQ01Dnhgq95g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.1/ScrollTrigger.min.js"
-        integrity="sha512-IHDCHrefnBT3vOCsvdkMvJF/MCPz/nBauQLzJkupa4Gn4tYg5a6VGyzIrjo6QAUy3We5HFOZUlkUpP0dkgE60A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="../static/script.js"></script>
+
+    async function fetchNews() {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/get-news');
+        const newsData = await response.json();
+
+        const newsSlider = document.getElementById('news-slider');
+        newsData.forEach(news => {
+            const newsCard = document.createElement('div');
+            newsCard.className = 'news-card';
+
+            newsCard.innerHTML = `
+                <img src="${news.image_url}" alt="${news.label}">
+                <div class="news-card-content">
+                    <h3>${news.label}</h3>
+                    <p>${news.text}</p>
+                </div>
+            `;
+
+            newsSlider.appendChild(newsCard);
+        });
+
+        // Initialize the slider logic after news cards are appended
+        initializeSlider();
+    } catch (error) {
+        console.error('Error fetching news:', error);
+    }
+}
+
+function initializeSlider() {
+    const slider = document.querySelector('.news-slider');
+    let isHovered = false;
+    let slideInterval;
+
+    function startSlide() {
+        slideInterval = setInterval(() => {
+            if (!isHovered) {
+                const firstCard = slider.querySelector('.news-card');
+                slider.style.transition = 'transform 0.5s ease-in-out';
+                slider.style.transform = `translateX(-${320}px)`; // Adjust card width if needed
+
+                setTimeout(() => {
+                    slider.style.transition = 'none';
+                    slider.style.transform = 'translateX(0)';
+                    slider.appendChild(firstCard);
+                }, 500);
+            }
+        }, 3000);
+    }
+
+    slider.addEventListener('mouseenter', () => {
+        isHovered = true;
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        isHovered = false;
+    });
+
+    startSlide();
+}
+
+// Fetch news and initialize the slider
+fetchNews();
+
+    </script>
 </body>
 
 </html>

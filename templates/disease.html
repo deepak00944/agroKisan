@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,47 +9,59 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
 
 </head>
+
 <body>
-    <div id="nav">
-        <a href="{{url_for('index')}} " id="logo">  <h1><img src="https://cdn-icons-png.flaticon.com/512/3377/3377932.png" alt=""> agroKisan </h1> </a>
-          <div id="nav-prt2">
-              <div id="contact_us">
-                  <a href="tel:+916261623713"> <i class="ri-whatsapp-line"></i> </a>
-                  <a href="https://www.instagram.com/_deepak094_/"><i class="ri-instagram-line"></i> </a> 
-                   <a href="https://twitter.com/deepak_094"><i class="ri-twitter-line"></i> </a>
-                  <a href="https://www.linkedin.com/in/deepak-singh-566787172/"><i class="ri-linkedin-box-line"></i> </a> 
-               </div>
-          </div>
-      </div>
-<div id="main">
-    <div id="right">
-        <div id="intro">
-            <h1>Welcome to <br> Plant Disease Diagnosis</h1>
-            <p>We provide a user-friendly solution to identify and combat plant diseases effectively. With the latest advancements in image processing and machine learning, our algorithm analyzes visual cues and symptoms, allowing you to upload images of your plants and receive accurate disease predictions. Whether you're a farmer or gardening enthusiast, our platform aims to help you take timely action to protect your precious plants and promote sustainable agriculture</p>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <!-- <h1><span class="highlight">agro</span>किसान</h1> -->
+                <img src="../static/logo.png" alt="">
+            </div>
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{url_for('index')}}">Home</a></li>
+                    <li><a href="{{url_for('predictor')}}">Crop Recommendation</a></li>
+                    <li class="current"><a href="{{url_for('disease')}}">Disease Prediction</a></li>
+                    <li><a href="{{url_for('market')}}">Market</a></li>
+              <li ><a href="{{url_for('contact')}}">Contact Us</a></li>
+                </ul>
+            </nav>
         </div>
-    </div>
-    <div id="left">
-        <div id="img_container">
-            <img id="myImage" src="" alt="" height="100%" width="100%">
+    </header>
+
+    <div class="container">
+        <section class="info-section">
+            <h2>Apple Disease Prediction</h2>
+            <p>Our advanced image recognition technology can help you detect apple diseases early. Simply upload a clear
+                image of the affected apple or leaf, and our system will analyze it for signs of common diseases,
+                helping you take prompt action to protect your crop.</p>
+        </section>
+
+
+        <section class="upload-section">
+            <h3>Upload Apple Image</h3>
+            <form id="upload-file" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="imageUpload" accept=".png, .jpg, .jpeg" style="display: none;">
+                <label for="imageUpload" class="btn">Choose Image</label>
+            </form>
+            <div id="imageContainer" style="position: relative;">
+                <img id="imagePreview" src="" alt="Uploaded apple image" style="display: none;">
+                <div class="scanner"></div>
+            </div>
+            <!-- <div class="image-section" style="display:none; overflow: hidden;">
+                <img id="imagePreview" src="#" style="width:300px;height:300px;margin: 5vh 36.5vw;"><br><br>
+            </div> -->
+            <button type="button" class="btn" id="btn-predict" style="display: none;">Analyze Image!</button>
+        </section>
+        <div class="loading" style="display: none;">
+            <div class="loader"></div>
+            <p>loading...</p>
         </div>
-    </div>
-</div>
-
-<div id="page2">
-    <br>
-        <h2>Plant Disease Diagnosis</h2>
-        <br>
-
-        <form id="upload-file" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" id="imageUpload" accept=".png, .jpg, .jpeg">
-            <button type="button" class="btn" id="btn-predict">Predict!</button>
-        </form>
-
-        <div class="image-section" style="display:none; overflow: hidden;">
-            <img id="imagePreview" src="#" style="width:300px;height:300px;margin: 5vh 36.5vw;"><br><br>
-        </div>
-
-        <div class="loader" style="display:none;"></div>
 
         <h3 id="result">
             <span id="predicted-name"> </span>
@@ -59,43 +72,47 @@
             <br>
             <span id="prevention">Prevention: </span>
         </h3>
-    <br><br>
-</div>
 
+    </div>
+    <footer>
+        <p>&copy; 2023 agroKisan. All rights reserved.</p>
+    </footer>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    var imageUrls = ["https://static.vecteezy.com/system/resources/previews/010/262/695/original/variegated-grass-pandanus-plant-in-white-round-contemporary-pot-container-isolated-on-transparent-background-for-garden-design-usage-free-png.png",
-"https://freepngimg.com/save/144814-small-pot-flower-hd-image-free/1200x1200",
-"https://static.vecteezy.com/system/resources/previews/009/661/264/non_2x/tropical-plant-in-pot-illustration-in-watercolor-free-png.png"];
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('header nav');
+        hamburger.addEventListener('click', () => {
+            nav.classList.toggle('show');
+        });
 
+        document.addEventListener('DOMContentLoaded', function () {
+            const imagePreview = document.getElementById('imagePreview');
+            const scanner = document.querySelector('.scanner');
+            const imageUpload = document.getElementById('imageUpload');
+            const btnPredict = document.getElementById('btn-predict');
 
-const myImage = document.getElementById('myImage');
-
-function changeImageLoop() {
-  let index = 0;
-
-  function setImage() {
-    myImage.src = imageUrls[index];
-    index = (index + 1) % imageUrls.length; 
-  }
-
-  setImage(); 
-  setInterval(setImage, 2000);
-}
-
-changeImageLoop();
-
-        // Preview the uploaded image
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').attr('src', e.target.result);
+            // Image Preview
+            imageUpload.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        btnPredict.style.display = 'inline-block';
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+            });
+
+            btnPredict.addEventListener('click', function () {
+                scanner.style.display = 'block';
+                setTimeout(() => {
+                    scanner.style.display = 'none';
+                }, 3000);
+            });
+        });
         $("#imageUpload").change(function () {
             $('.image-section').show();
             $('#btn-predict').show();
@@ -110,7 +127,7 @@ changeImageLoop();
 
             // Display loader while waiting for prediction
             $(this).hide();
-            $('.loader').show();
+            $('.loading').show();
 
             // Make POST request to the /predict route
             $.ajax({
@@ -123,22 +140,24 @@ changeImageLoop();
                 async: true,
                 success: function (data) {
                     // Show prediction result
-                    $('.loader').hide();
+                    $('.loading').hide();
                     $('#result').fadeIn(600);
-                    $('#result').html('Predicted Disease: ' + '<br>'  + data.disease + ' <br><br> <br>' +
-                                      'Cause: '+ '<br>' + data.cause + '<br> <br><br>' +
-                                      'Symptoms: '+ '<br>' + data.symptoms + '<br><br><br>' +
-                                      'Prevention: '+ '<br>' + data.prevention);
+                    $('#result').html('Predicted Disease: ' + '<br>' + data.disease + ' <br><br> <br>' +
+                        'Cause: ' + '<br>' + data.cause + '<br> <br><br>' +
+                        'Symptoms: ' + '<br>' + data.symptoms + '<br><br><br>' +
+                        'Prevention: ' + '<br>' + data.prevention);
                     $('#result').css({
-                        'color': 'white',
+                        'display': 'block',
+                        'color': 'black',
                         'text-align': 'justify',
-                        'font-weight':'400',
-                        'font-size':'2.2vh'
+                        'font-weight': '400',
+                        'font-size': '2.2vh'
                     });
                 },
             });
         });
 
-</script>
+    </script>
 </body>
+
 </html>

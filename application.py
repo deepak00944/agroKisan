@@ -7,7 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing import image
 
-from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask import Flask, redirect, url_for, request, flash, render_template, jsonify
 from flask import jsonify
 
 from werkzeug.utils import secure_filename
@@ -17,6 +17,15 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 import warnings
+from flask_mail import Mail, Message
+
+# News 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 app = Flask(__name__, static_folder=r"static")
 
@@ -25,7 +34,17 @@ data = pd.DataFrame(pd.read_csv("final.csv"))
 model = pickle.load(open(r"RandomForest.pkl", "rb"))
 area = pd.read_csv(r"final_data.csv")
 commodity = pd.read_csv(r"commodities1.csv")
+app.config['SECRET_KEY'] = '262044xx'  # Change this to a random secret key
 
+# Configure Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Replace with your SMTP server
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
+app.config['MAIL_PASSWORD'] = 'liujhsoaqrcrllnr'  # Replace with your email password
+app.config['MAIL_DEFAULT_SENDER'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
+
+mail = Mail(app)
 
 @app.route('/')
 def index():
@@ -275,6 +294,76 @@ def upload():
 @app.route('/rainfall', methods = ['GET', 'POST'])
 def rainfall():
     return render_template('rainfall.html')
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        subject = request.form['subject']
+        message = request.form['message']
+        try:
+            msg = Message(subject,
+                          recipients=['deepak.s.ashta@gmail.com']) 
+            msg.body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            mail.send(msg)
+            flash('Your message has been sent successfully!', 'success')
+        except Exception as e:
+            flash('An error occurred while sending your message. Please try again later.', 'error')
+        
+        return redirect(url_for('contact'))
+    
+    return render_template('contact.html')
+
+
+# News 
+@app.route('/get-news', methods=['GET'])
+def get_news():
+    # Your existing Selenium code to scrape the website
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    url = 'https://agristack.gov.in/#/'
+    driver.get(url)
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.slide')))
+    html_content = driver.page_source
+    driver.quit()
+    
+    soup = bs(html_content, 'html.parser')
+    slides = soup.find_all('div', class_='slide')
+    
+    extracted_data = []
+    seen_images = set()
+    base_url = 'https://agristack.gov.in'
+    
+    for slide in slides:
+        label = slide.find('span', class_='agri-business-label')
+        if label:
+            label_text = label.get_text(strip=True)
+
+            img_div = slide.find('div', class_='agri-gallery-section')
+            img_url = ""
+            if img_div:
+                style_attr = img_div.get('style', '')
+                img_url = style_attr.split('url("')[1].split('")')[0] if 'url(' in style_attr else ''
+                if img_url and not img_url.startswith('http'):
+                    img_url = base_url + '/' + img_url.lstrip('/')
+                if img_url in seen_images:
+                    continue
+                seen_images.add(img_url)
+
+            text = slide.find('div', class_='agri-gallery-text')
+            text_content = text.get_text(strip=True) if text else ''
+
+            extracted_data.append({
+                'label': label_text,
+                'image_url': img_url,
+                'text': text_content
+            })
+    
+    return jsonify(extracted_data)
+
 
 if __name__ == '__main__':
     app.run()
