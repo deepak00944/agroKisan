@@ -1,13 +1,18 @@
 
 // event jo ho rha h button dabane prr brr brr go krne prr
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   const firstDiv = document.getElementById("main");
   const secondDiv = document.getElementById("load");
   const result = document.getElementById("result");
   const showButton = document.getElementById("btn_predict");
+  const hamburger = document.querySelector('.hamburger');
+  const nav = document.querySelector('header nav');
 
-  
+  hamburger.addEventListener('click', () => {
+    nav.classList.toggle('show');
+  });
+
   function handleButtonClick() {
     firstDiv.style.display = "none";
     secondDiv.style.display = "block";
@@ -23,13 +28,13 @@ document.addEventListener("DOMContentLoaded", function() {
       firstDiv.style.display = "block";
     }, 1000);
 
-    
+
     setTimeout(function () {
       result.style.display = "block";
       fourthDiv.style.display = "none";
     }, 1000);
 
-   
+
   }
 
   showButton.addEventListener("click", handleButtonClick);
@@ -42,15 +47,15 @@ function makeFieldsRequired() {
   var selectElements = form.querySelectorAll('select');
 
   inputElements.forEach(function (input) {
-      if (!input.hasAttribute('required')) {
-          input.setAttribute('required', true);
-      }
+    if (!input.hasAttribute('required')) {
+      input.setAttribute('required', true);
+    }
   });
 
   selectElements.forEach(function (select) {
-      if (!select.hasAttribute('required')) {
-          select.setAttribute('required', true);
-      }
+    if (!select.hasAttribute('required')) {
+      select.setAttribute('required', true);
+    }
   });
 }
 

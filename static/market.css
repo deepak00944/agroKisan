@@ -9,10 +9,11 @@ body {
 
  /* New */
  .container {
-   max-width: 900px;
-   margin: auto;
-   padding: 0 15px;
- }
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+  /* padding: 20px; */
+}
  
  /* Header Section */
  header {
@@ -32,7 +33,7 @@ body {
  header li {
    float: left;
    display: inline;
-   padding: 0 20px 0 20px;
+   padding: 0px 10px;
  }
  header #branding {
    float: left;
@@ -353,6 +354,40 @@ body {
    }
  }
  
+
+ @media(max-width: 768px) {
+  header #branding,
+  header nav,
+  header nav li {
+      float: none;
+      text-align: center;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+  }
+  header {
+      padding-bottom: 20px;
+  }
+  .hamburger {
+      display: block;
+      float: right;
+      margin-top: -50px;
+  }
+  header nav {
+      display: none;
+  }
+  header nav.show {
+      display: block;
+  }
+  header nav ul {
+      margin-top: 20px;
+  }
+  header nav li {
+      padding: 10px;
+      background: #3e8e41;
+      margin-bottom: 1px;
+  }
+}
 
 
 
