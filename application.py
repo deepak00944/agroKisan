@@ -1,61 +1,51 @@
-import os
 import numpy as np
 import pandas as pd
 import pickle
-
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.preprocessing import image
-
-from flask import Flask, redirect, url_for, request, flash, render_template, jsonify
-from flask import jsonify
-
-from werkzeug.utils import secure_filename
-from gevent.pywsgi import WSGIServer
+import torch
+from flask import Flask, redirect, url_for, request, render_template, jsonify
 import requests
-
 from bs4 import BeautifulSoup as bs
+from PIL import Image
+from io import BytesIO
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+from efficientnet_pytorch import model as enet
 
-import warnings
-from flask_mail import Mail, Message
-
-# News 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
+# Your code using torch and other imports
 
 app = Flask(__name__, static_folder=r"static")
 
-model2 = tf.keras.models.load_model("Elastic_net.keras")
+def get_default_device():
+    """Pick GPU if available, else CPU"""
+    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+device = get_default_device()
+
+def load_model():
+    """Load and quantize the model dynamically for efficient memory usage."""
+    model = enet.EfficientNet.from_name('efficientnet-b0', num_classes=6)
+    # Load weights into the model
+    model.load_state_dict(torch.load('checking.pth', map_location=device))
+    # Apply dynamic quantization to reduce memory usage during inference
+    model = torch.quantization.quantize_dynamic(model, {nn.Linear}, dtype=torch.qint8)
+    model.to(device)
+    model.eval()  # Set the model to evaluation mode
+    return model
+
+
+# Load other necessary data
 data = pd.DataFrame(pd.read_csv("final.csv"))
 model = pickle.load(open(r"RandomForest.pkl", "rb"))
 area = pd.read_csv(r"final_data.csv")
 commodity = pd.read_csv(r"commodities1.csv")
-app.config['SECRET_KEY'] = '262044xx'  # Change this to a random secret key
-
-# Configure Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Replace with your SMTP server
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
-app.config['MAIL_PASSWORD'] = 'liujhsoaqrcrllnr'  # Replace with your email password
-app.config['MAIL_DEFAULT_SENDER'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
-
-mail = Mail(app)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
 @app.route('/predictor')
 def predictor():
     return render_template('predictor.html')
-
-
 
 def now_final(state_name, district_name, market, commodity_name, trend, Datefrom, DateTo):
     commodity_code = commodity[commodity['Commodities'] == commodity_name]['code'].unique()[0]
@@ -152,8 +142,6 @@ def market():
     area["market_district"] = area["State"]+"_" +area['District'] + "_" + area['Market']
     markets = sorted(area['market_district'].unique().astype(str))
     commodities= commodity["Commodities"].unique().astype(str)
-    # print(commodities)
-
     return render_template('market.html', states=state1, districts=district1, commodities=commodities, markets = markets)
 
 @app.route('/price',methods=['POST'])
@@ -165,13 +153,21 @@ def price():
     trend = request.form.get('Price/Arrival')
     Datefrom = request.form.get('from')
     DateTo = request.form.get('To')
-    trend_code=0
-
     print(trend)
     final_data,heading=now_final(state_name,district_name,market,commodity_name,trend,Datefrom,DateTo)
     table_data = final_data.to_dict(orient='records')
 
     return jsonify(table_data)
+
+
+label_dic = {
+    0: 'healthy', 
+    1: 'scab',
+    2: 'rust',
+    3: 'frog_eye_leaf_spot',
+    4: 'complex', 
+    5: 'powdery_mildew'
+}
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -186,30 +182,26 @@ def predict():
 
     return ("{} Crop can be Grown".format(str(output[0])))
 
-
 def about_disease(filtered_df, column):
     cause_values = filtered_df[column]
-
-    f = ""
-    for cause in cause_values:
-        f = f + cause + ", "  # Separate multiple causes with a comma
-    return f.rstrip(", ")  # Remove trailing comma and spaces
+    f = ", ".join(cause_values)
+    return f.rstrip(", ") # Remove trailing comma and spaces
 
 
-def load_prep(img_path):
-    img = tf.io.read_file(img_path)
+def transform_valid():
+    augmentation_pipeline = A.Compose(
+        [
+            A.SmallestMaxSize(224),
+            A.CenterCrop(224, 224),
+            A.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            ),
+            ToTensorV2()
+        ]
+    )
+    return lambda img: augmentation_pipeline(image=np.array(img))['image']
 
-    img = tf.image.decode_image(img)
-
-    img = tf.image.resize(img, size=(224, 224))
-
-    return img
-
-
-def model_predict(img_path, model2):
-    image = load_prep(img_path)
-    preds = model2.predict(tf.expand_dims(image, axis=0))
-    return preds
 
 
 @app.route('/disease', methods=['GET'])
@@ -217,153 +209,57 @@ def disease():
     # Main page
     return render_template('disease.html')
 
-
-@app.route('/disease_pred', methods=['GET', 'POST'])
+@app.route('/disease_pred', methods=['POST'])
 def upload():
     if request.method == 'POST':
-        # Get the file from post request
         f = request.files['file']
+        
+        # Open the image file directly in memory using BytesIO
+        img = Image.open(BytesIO(f.read()))
 
-        # Save the file to ./uploads
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(file_path)
+        # Apply transformations (resize, crop, normalize)
+        img = transform_valid()(img).unsqueeze(0)  # Add batch dimension
+        img = img.to(device)
 
-        # Make prediction
-        preds = model_predict(file_path, model2)
-        print(preds)
+        # Load model dynamically for the prediction request
+        model = load_model()
 
-        # x = x.reshape([64, 64]);
-        disease_class = ['Apple___Apple_scab',
-                         'Apple___Black_rot',
-                         'Apple___Cedar_apple_rust',
-                         'Apple___healthy',
-                         'Blueberry___healthy',
-                         'Cherry_(including_sour)___Powdery_mildew',
-                         'Cherry_(including_sour)___healthy',
-                         'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot',
-                         'Corn_(maize)___Common_rust_',
-                         'Corn_(maize)___Northern_Leaf_Blight',
-                         'Corn_(maize)___healthy',
-                         'Grape___Black_rot',
-                         'Grape___Esca_(Black_Measles)',
-                         'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)',
-                         'Grape___healthy',
-                         'Orange___Haunglongbing_(Citrus_greening)',
-                         'Peach___Bacterial_spot',
-                         'Peach___healthy',
-                         'Pepper,_bell___Bacterial_spot',
-                         'Pepper,_bell___healthy',
-                         'Potato___Early_blight',
-                         'Potato___Late_blight',
-                         'Potato___healthy',
-                         'Raspberry___healthy',
-                         'Soybean___healthy',
-                         'Squash___Powdery_mildew',
-                         'Strawberry___Leaf_scorch',
-                         'Strawberry___healthy',
-                         'Tomato___Bacterial_spot',
-                         'Tomato___Early_blight',
-                         'Tomato___Late_blight',
-                         'Tomato___Leaf_Mold',
-                         'Tomato___Septoria_leaf_spot',
-                         'Tomato___Spider_mites Two-spotted_spider_mite',
-                         'Tomato___Target_Spot',
-                         'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
-                         'Tomato___Tomato_mosaic_virus',
-                         'Tomato___healthy']
+        # Make prediction with the loaded and quantized model
+        with torch.no_grad():  # Disable gradient calculation
+            output = model(img)
+            predicted_indices = torch.argmax(output, dim=1)
 
-        result = disease_class[preds.argmax()]
+        # Convert predicted numerical labels to string labels
+        predicted_labels_str = [label_dic[label.item()] for label in predicted_indices]
 
-        filtered_df = data[data['Type'] == result]
+        # Assuming you have a DataFrame named 'data' with relevant information
+        filtered_df = data[data['Type'] == predicted_labels_str[0]]
 
         symptoms = about_disease(filtered_df, 'Symptoms')
         cause = about_disease(filtered_df, 'Cause')
         prevention = about_disease(filtered_df, 'Prevention')
 
         response = {
-            'disease': result,
+            'disease': predicted_labels_str[0],
             'cause': cause,
             'symptoms': symptoms,
             'prevention': prevention
         }
 
+        # Clear model from memory after inference
+        del model
+        torch.cuda.empty_cache()  # Optional: Clear GPU cache if using GPU
+
         return jsonify(response)
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')  # Ensure you have a 'contact.html' template
+
 
 @app.route('/rainfall', methods = ['GET', 'POST'])
 def rainfall():
     return render_template('rainfall.html')
-
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        subject = request.form['subject']
-        message = request.form['message']
-        try:
-            msg = Message(subject,
-                          recipients=['deepak.s.ashta@gmail.com']) 
-            msg.body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
-            mail.send(msg)
-            flash('Your message has been sent successfully!', 'success')
-        except Exception as e:
-            flash('An error occurred while sending your message. Please try again later.', 'error')
-        
-        return redirect(url_for('contact'))
-    
-    return render_template('contact.html')
-
-
-# News 
-@app.route('/get-news', methods=['GET'])
-def get_news():
-    # Your existing Selenium code to scrape the website
-    chrome_options = Options()
-    chrome_options.add_argument('--headless')
-    driver = webdriver.Chrome(options=chrome_options)
-    
-    url = 'https://agristack.gov.in/#/'
-    driver.get(url)
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.slide')))
-    html_content = driver.page_source
-    driver.quit()
-    
-    soup = bs(html_content, 'html.parser')
-    slides = soup.find_all('div', class_='slide')
-    
-    extracted_data = []
-    seen_images = set()
-    base_url = 'https://agristack.gov.in'
-    
-    for slide in slides:
-        label = slide.find('span', class_='agri-business-label')
-        if label:
-            label_text = label.get_text(strip=True)
-
-            img_div = slide.find('div', class_='agri-gallery-section')
-            img_url = ""
-            if img_div:
-                style_attr = img_div.get('style', '')
-                img_url = style_attr.split('url("')[1].split('")')[0] if 'url(' in style_attr else ''
-                if img_url and not img_url.startswith('http'):
-                    img_url = base_url + '/' + img_url.lstrip('/')
-                if img_url in seen_images:
-                    continue
-                seen_images.add(img_url)
-
-            text = slide.find('div', class_='agri-gallery-text')
-            text_content = text.get_text(strip=True) if text else ''
-
-            extracted_data.append({
-                'label': label_text,
-                'image_url': img_url,
-                'text': text_content
-            })
-    
-    return jsonify(extracted_data)
-
 
 if __name__ == '__main__':
     app.run()

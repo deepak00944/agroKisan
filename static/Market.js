@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   hamburger.addEventListener('click', () => {
     nav.classList.toggle('show');
+    hamburger.classList.toggle('active');
   });
 
   function handleButtonClick() {

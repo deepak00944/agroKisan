@@ -18,9 +18,9 @@
                 <img src="../static/logo.png" alt="">
             </div>
             <div class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
             <nav>
                 <ul>
@@ -80,10 +80,12 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+         console.log(window.innerWidth);
         const hamburger = document.querySelector('.hamburger');
         const nav = document.querySelector('header nav');
         hamburger.addEventListener('click', () => {
             nav.classList.toggle('show');
+            hamburger.classList.toggle('active');
         });
 
         document.addEventListener('DOMContentLoaded', function () {

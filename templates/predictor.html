@@ -4,37 +4,29 @@
 <head xmlns="http://www.w3.org/1999/xhtml">
     <meta charset="UTF-8">
     <title>Crop Predictor</title>
-    <link rel="stylesheet" type="text/css" href="../static/Predictor.css">
+    <link rel="stylesheet" href="../static/Predictor.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
-    <!-- <div id="loader">
-        <img src="https://cdn.dribbble.com/users/1385017/screenshots/3518448/media/a4e10372b7543174af03860354561698.gif" height="100%" width="100%">
-    </div> -->
     <header>
         <div class="container">
             <div id="branding">
-                <!-- <h1><span class="highlight">agro</span>किसान</h1> -->
                 <img src="../static/logo.png" alt="">
             </div>
             <div class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
             <nav>
                 <ul>
                     <li><a href="{{url_for('index')}}">Home</a></li>
-                    <li class="current"><a href="{{url_for('predictor')}}">Crop Recommendation</a></li>
+                    <li><a href="{{url_for('predictor')}}">Crop Recommendation</a></li>
                     <li><a href="{{url_for('disease')}}">Disease Prediction</a></li>
                     <li><a href="{{url_for('market')}}">Market</a></li>
-                    <li ><a href="{{url_for('contact')}}">Contact Us</a></li>
+                    <li><a href="{{url_for('contact')}}">Contact Us</a></li>
                 </ul>
             </nav>
         </div>
@@ -50,34 +42,34 @@
             <h3>Enter Your Field Data</h3>
             <form id="cropForm" method="post" accept-charset="utf-8" name="Modelform">
                 <div class="form-group">
-                    <label for="potassium">Potassium (K) Level:</label>
-                    <input type="number" id="potassium" name="potassium" min="0" required>
+                    <label for="nitrogen">Nitrogen (N) Level:</label>
+                    <input type="number" id="nitrogen" name="nitrogen" min="0" max="140" step="0.01" required placeholder="Enter value (0-140), e.g., 50">
                 </div>
                 <div class="form-group">
-                    <label for="nitrogen">Nitrogen (N) Level:</label>
-                    <input type="number" id="nitrogen" name="nitrogen" min="0" required>
+                    <label for="potassium">Potassium (K) Level:</label>
+                    <input type="number" id="potassium" name="potassium" min="5" max="205" step="0.01" required placeholder="Enter value (5-205), e.g., 100">
                 </div>
                 <div class="form-group">
                     <label for="phosphorus">Phosphorus (P) Level:</label>
-                    <input type="number" id="phosphorus" name="phosphorus" min="0" required>
+                    <input type="number" id="phosphorus" name="phosphorus" min="5" max="145" step="0.01" required placeholder="Enter value (5-145), e.g., 75">
+                </div>
+                <div class="form-group">
+                    <label for="temperature">Temperature (°F):</label>
+                    <input type="number" id="temperature" name="temperature" step="0.01" required placeholder="Enter temperature in °F, e.g., 75.5">
                 </div>
                 <div class="form-group">
                     <label for="humidity">Humidity:</label>
-                    <input type="number" id="humidity" name="humidity" min="0" required>
+                    <input type="number" id="humidity" name="humidity" min="14" max="100" step="0.01" required placeholder="Enter value (14-100), e.g., 65.5">
                 </div>
                 <div class="form-group">
-                    <label for="temperature">Temperature (°C):</label>
-                    <input type="number" id="temperature" name="temperature" min="0" required>
+                    <label for="ph">pH Level:</label>
+                    <input type="number" id="ph" name="ph" step="0.1" min="3.5" max="10" required placeholder="Enter value (3.5-10), e.g., 6.5">
                 </div>
                 <div class="form-group">
-                    <label for="ph">pH Level (0-14):</label>
-                    <input type="number" id="ph" name="ph" step="0.1" min="0" max="14" required>
+                    <label for="rainfall">Rainfall (mm):</label>
+                    <input type="number" id="rainfall" name="rainfall" min="20" max="300" step="0.01" required placeholder="Enter value (20-300), e.g., 150">
                 </div>
-                <div class="form-group">
-                    <label for="ph">Rainfall:</label>
-                    <input type="number" id="rainfall" name="rainfall" min="0" required>
-                </div>
-                <button type="submit" class="btn" onclick="send_data()">Get Recommendation</button>
+                <button type="submit" class="btn" onclick="validateAndSendData()">Get Recommendation</button>
             </form>
             <div class="row">
                 <div class="out" style="text-align: center">
@@ -87,30 +79,74 @@
         </section>
     </div>
 
-
-
-
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const hamburger = document.querySelector(".hamburger")
+            const nav = document.querySelector("header nav")
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const hamburger = document.querySelector('.hamburger');
-            const nav = document.querySelector('header nav');
+            hamburger.addEventListener("click", () => {
+                nav.classList.toggle("show");
+                hamburger.classList.toggle("active");
+            })
 
-            hamburger.addEventListener('click', () => {
-                nav.classList.toggle('show');
-            });
-        });
+            // Close the menu when a link is clicked
+            const navLinks = document.querySelectorAll("header nav a")
+            navLinks.forEach((link) => {
+                link.addEventListener("click", () => {
+                    nav.classList.remove("show")
+                })
+            })
 
+            // Close the menu when clicking outside of it
+            document.addEventListener("click", (event) => {
+                const isClickInsideNav = nav.contains(event.target)
+                const isClickOnHamburger = hamburger.contains(event.target)
 
+                if (!isClickInsideNav && !isClickOnHamburger && nav.classList.contains("show")) {
+                    nav.classList.remove("show")
+                }
+            })
+        })
 
-        function form_handler(event) {
-            event.preventDefault(); // Don't submit the form normally
+        function validateAndSendData(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            const form = document.getElementById('cropForm');
+            const formData = new FormData(form);
+
+            const validationRules = {
+                nitrogen: { min: 0, max: 140 },
+                potassium: { min: 5, max: 205 },
+                phosphorus: { min: 5, max: 145 },
+                temperature: { min: -Infinity, max: Infinity }, // No specific range for temperature
+                humidity: { min: 14, max: 100 },
+                ph: { min: 3.5, max: 10 },
+                rainfall: { min: 20, max: 300 }
+            };
+
+            let isValid = true;
+            let errorMessage = '';
+
+            for (const [key, value] of formData.entries()) {
+                const numValue = parseFloat(value);
+                const rule = validationRules[key];
+
+                if (rule && (isNaN(numValue) || numValue < rule.min || numValue > rule.max)) {
+                    isValid = false;
+                    errorMessage += `${key.charAt(0).toUpperCase() + key.slice(1)} must be between ${rule.min} and ${rule.max}.\n`;
+                }
+            }
+
+            if (!isValid) {
+                alert(errorMessage);
+                return;
+            }
+
+            // If all validations pass, send the data
+            send_data();
         }
+
         function send_data() {
-            document.querySelector('form').addEventListener("submit", form_handler);
-
-            var fd = new FormData(document.querySelector('form'));
-
             var xhr = new XMLHttpRequest({ mozSystem: true });
 
             xhr.open('POST', '/predict', true);
@@ -121,14 +157,11 @@
                 }
             };
 
-            xhr.onload = function () { };
-
-            xhr.send(fd);
+            xhr.send(new FormData(document.getElementById('cropForm')));
         }
 
-
-
-
+        // Add event listener to the form
+        document.getElementById('cropForm').addEventListener('submit', validateAndSendData);
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -140,8 +173,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
-
-
 </body>
 
 </html>
+

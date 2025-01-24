@@ -30,7 +30,7 @@ header a {
   color: #ffffff;
   text-decoration: none;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 1.2vw;
 }
 
 header li {
@@ -54,8 +54,7 @@ header nav {
   margin-top: 10px;
 }
 
-header .highlight,
-header .current a {
+header .highlight, header .current a {
   color: #FFD700;
   font-weight: bold;
 }
@@ -71,11 +70,13 @@ header a:hover {
   padding: 10px;
 }
 
-.hamburger div {
+.hamburger span {
+  display: block;
   width: 25px;
   height: 3px;
   background-color: white;
   margin: 5px 0;
+  transition: all 0.3s ease;
 }
 
 .info-section {
@@ -130,7 +131,8 @@ footer {
   text-align: center;
 }
 
-@media(max-width: 768px) {
+
+@media (max-width: 768px){
 
   header #branding,
   header nav,
@@ -147,7 +149,7 @@ footer {
   }
 
   .hamburger {
-    display: block;
+    display: block !important;
     float: right;
     margin-top: -50px;
   }
@@ -174,4 +176,18 @@ footer {
     width: 80%;
     margin: 10px auto;
   }
+}
+
+/* Hamburger to Cross Animation */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px,
+  -6px);
 }

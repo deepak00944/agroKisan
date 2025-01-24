@@ -16,19 +16,16 @@
     <header>
         <div class="container">
             <div id="branding">
-                <!-- <h1><span class="highlight">agro</span>किसान</h1> -->
                 <img src="../static/logo.png" alt="">
             </div>
             <div class="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
             <nav>
                 <ul>
                     <li class="current"><a href="{{url_for('index')}}">Home</a></li>
-                    <!-- <li ><a href="cropRecommendation.html">Crop Recommendation</a></li>
-                    <li ><a href="disease.html">Disease Prediction</a></li> -->
                     <li><a href="#features">Services</a></li>
                     <li><a href="{{url_for('contact')}}">Contact</a></li>
                 </ul>
@@ -112,6 +109,7 @@
             const features = document.querySelectorAll('.feature');
             const hamburger = document.querySelector('.hamburger');
             const nav = document.querySelector('header nav');
+            const navLinkss = document.querySelectorAll("header nav a")
 
             features.forEach((feature, index) => {
                 feature.addEventListener('mouseenter', () => {
@@ -131,8 +129,10 @@
 
             hamburger.addEventListener('click', () => {
                 nav.classList.toggle('show');
+                hamburger.classList.toggle("active")
             });
 
+            // Highlight the links
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
@@ -153,45 +153,18 @@
             });
         });
 
-    //     async function fetchNews() {
-    //     try {
-    //         const response = await fetch('http://127.0.0.1:5000/get-news');
-    //         const newsData = await response.json();
+        
+        async function fetchNews() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/get-news');
+                const newsData = await response.json();
 
-    //         const newsSlider = document.getElementById('news-slider');
-    //         newsData.forEach(news => {
-    //             const newsCard = document.createElement('div');
-    //             newsCard.className = 'news-card';
+                const newsSlider = document.getElementById('news-slider');
+                newsData.forEach(news => {
+                    const newsCard = document.createElement('div');
+                    newsCard.className = 'news-card';
 
-    //             newsCard.innerHTML = `
-    //                 <img src="${news.image_url}" alt="${news.label}">
-    //                 <div class="news-card-content">
-    //                     <h3>${news.label}</h3>
-    //                     <p>${news.text}</p>
-    //                 </div>
-    //             `;
-
-    //             newsSlider.appendChild(newsCard);
-    //         });
-    //     } catch (error) {
-    //         console.error('Error fetching news:', error);
-    //     }
-    // }
-
-    // fetchNews();
-    
-
-    async function fetchNews() {
-    try {
-        const response = await fetch('http://127.0.0.1:5000/get-news');
-        const newsData = await response.json();
-
-        const newsSlider = document.getElementById('news-slider');
-        newsData.forEach(news => {
-            const newsCard = document.createElement('div');
-            newsCard.className = 'news-card';
-
-            newsCard.innerHTML = `
+                    newsCard.innerHTML = `
                 <img src="${news.image_url}" alt="${news.label}">
                 <div class="news-card-content">
                     <h3>${news.label}</h3>
@@ -199,50 +172,50 @@
                 </div>
             `;
 
-            newsSlider.appendChild(newsCard);
-        });
+                    newsSlider.appendChild(newsCard);
+                });
 
-        // Initialize the slider logic after news cards are appended
-        initializeSlider();
-    } catch (error) {
-        console.error('Error fetching news:', error);
-    }
-}
-
-function initializeSlider() {
-    const slider = document.querySelector('.news-slider');
-    let isHovered = false;
-    let slideInterval;
-
-    function startSlide() {
-        slideInterval = setInterval(() => {
-            if (!isHovered) {
-                const firstCard = slider.querySelector('.news-card');
-                slider.style.transition = 'transform 0.5s ease-in-out';
-                slider.style.transform = `translateX(-${320}px)`; // Adjust card width if needed
-
-                setTimeout(() => {
-                    slider.style.transition = 'none';
-                    slider.style.transform = 'translateX(0)';
-                    slider.appendChild(firstCard);
-                }, 500);
+                // Initialize the slider logic after news cards are appended
+                initializeSlider();
+            } catch (error) {
+                console.error('Error fetching news:', error);
             }
-        }, 3000);
-    }
+        }
 
-    slider.addEventListener('mouseenter', () => {
-        isHovered = true;
-    });
+        function initializeSlider() {
+            const slider = document.querySelector('.news-slider');
+            let isHovered = false;
+            let slideInterval;
 
-    slider.addEventListener('mouseleave', () => {
-        isHovered = false;
-    });
+            function startSlide() {
+                slideInterval = setInterval(() => {
+                    if (!isHovered) {
+                        const firstCard = slider.querySelector('.news-card');
+                        slider.style.transition = 'transform 0.5s ease-in-out';
+                        slider.style.transform = `translateX(-${320}px)`; // Adjust card width if needed
 
-    startSlide();
-}
+                        setTimeout(() => {
+                            slider.style.transition = 'none';
+                            slider.style.transform = 'translateX(0)';
+                            slider.appendChild(firstCard);
+                        }, 500);
+                    }
+                }, 3000);
+            }
 
-// Fetch news and initialize the slider
-fetchNews();
+            slider.addEventListener('mouseenter', () => {
+                isHovered = true;
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                isHovered = false;
+            });
+
+            startSlide();
+        }
+
+        // Fetch news and initialize the slider
+        fetchNews();
 
     </script>
 </body>
