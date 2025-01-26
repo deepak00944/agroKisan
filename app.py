@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import torch
 from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask import jsonify
 import requests
 from bs4 import BeautifulSoup as bs
 from PIL import Image
@@ -10,10 +11,20 @@ from io import BytesIO
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from efficientnet_pytorch import model as enet
+import torch
+from efficientnet_pytorch import model as enet
+from torch import nn
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.webdriver.chrome.options import Options
 
-# Your code using torch and other imports
 
-app = Flask(__name__, static_folder=r"static")
+
+app = Flask(__name__)
 
 def get_default_device():
     """Pick GPU if available, else CPU"""
@@ -42,6 +53,54 @@ commodity = pd.read_csv(r"commodities1.csv")
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# News
+@app.route('/get-news', methods=['GET'])
+def get_news():
+    # Your existing Selenium code to scrape the website
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    driver = webdriver.Chrome(options=chrome_options)
+    
+    url = 'https://agristack.gov.in/#/'
+    driver.get(url)
+    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.slide')))
+    html_content = driver.page_source
+    driver.quit()
+    
+    soup = bs(html_content, 'html.parser')
+    slides = soup.find_all('div', class_='slide')
+    
+    extracted_data = []
+    seen_images = set()
+    base_url = 'https://agristack.gov.in'
+    
+    for slide in slides:
+        label = slide.find('span', class_='agri-business-label')
+        if label:
+            label_text = label.get_text(strip=True)
+
+            img_div = slide.find('div', class_='agri-gallery-section')
+            img_url = ""
+            if img_div:
+                style_attr = img_div.get('style', '')
+                img_url = style_attr.split('url("')[1].split('")')[0] if 'url(' in style_attr else ''
+                if img_url and not img_url.startswith('http'):
+                    img_url = base_url + '/' + img_url.lstrip('/')
+                if img_url in seen_images:
+                    continue
+                seen_images.add(img_url)
+
+            text = slide.find('div', class_='agri-gallery-text')
+            text_content = text.get_text(strip=True) if text else ''
+
+            extracted_data.append({
+                'label': label_text,
+                'image_url': img_url,
+                'text': text_content
+            })
+    
+    return jsonify(extracted_data)
 
 @app.route('/predictor')
 def predictor():
@@ -252,10 +311,10 @@ def upload():
 
         return jsonify(response)
 
+
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')  # Ensure you have a 'contact.html' template
-
+    return render_template('contact.html')
 
 @app.route('/rainfall', methods = ['GET', 'POST'])
 def rainfall():

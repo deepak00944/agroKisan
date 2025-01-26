@@ -1,12 +1,12 @@
 /* Base styles */
 * {
   margin: 0;
-  dding: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   background: #f3f4f6;
   color: #333;
   overflow-x: hidden;
@@ -23,10 +23,10 @@ body {
 
 /* Header Section */
 header {
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   padding: 20px 0;
-  border-bottom: #2E7D32 3px solid;
+  border-bottom: #2e7d32 3px solid;
   animation: fadeInDown 1s ease-out;
 }
 
@@ -58,7 +58,7 @@ header nav li {
 
 header .highlight,
 header .current a {
-  color: #FFD700;
+  color: #ffd700;
   font-weight: bold;
 }
 
@@ -121,6 +121,11 @@ canvas {
   height: auto;
 }
 
+#india-map{
+  height: 100%;
+  width: 60vw;
+}
+
 path {
   fill: #ccc;
   stroke: #333;
@@ -133,11 +138,18 @@ path:hover {
   fill: #3498db;
 }
 
+.map-container p {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
 /* Form Section */
 .commodity-form-section {
   padding: 50px 0;
   text-align: center;
   animation: fadeInUp 1s ease-out;
+  margin-top: -20vw;
 }
 
 .commodity-form-section h2 {
@@ -290,8 +302,17 @@ table th {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  header a {
+    font-size: 16px;
+  }
+
+  #india-map{
+    width: 500px;
+  }
+
   .container {
-    width: 95%;
+    width: 100%;
+    padding: 0 10px;
   }
 
   header .container {
@@ -357,6 +378,10 @@ table th {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
+  header a {
+    font-size: 16px;
+  }
+
   .container {
     width: 90%;
   }
@@ -367,3 +392,22 @@ table th {
     width: 80%;
   }
 }
+
+@media (max-width: 320px) {
+  header {
+    padding: 15px 0;
+  }
+
+  header #branding img {
+    height: 40px;
+  }
+
+  .commodity-form-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .map-container {
+    margin: 15px auto;
+  }
+}
+

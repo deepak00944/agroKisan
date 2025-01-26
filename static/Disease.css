@@ -69,12 +69,31 @@ header a:hover {
     transition: all 0.3s ease;
   }
 
-.info-section {
+  .info-image-wrapper {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
     background: #ffffff;
     padding: 20px;
     margin-top: 20px;
     border-radius: 5px;
+  }
+
+
+.info-section {
+    width: 50%;
 }
+
+.info-image{
+    width: 50%;
+}
+
+.info-image img{
+    border-radius: 5px;
+}
+
 .upload-section {
     background: #ffffff;
     padding: 20px;
@@ -188,6 +207,9 @@ footer {
     header {
         padding-bottom: 20px;
     }
+    header a{
+        font-size: 16px;
+    }
     .hamburger {
         display: block;
         float: right;
@@ -210,6 +232,10 @@ footer {
     #features .feature {
         width: 80%;
         margin: 10px auto;
+    }
+
+    .info-image-wrapper{
+        flex-direction: column;
     }
 }
 
