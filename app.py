@@ -27,17 +27,17 @@ from selenium.webdriver.chrome.options import Options
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '262044xx'  # Change this to a random secret key
+# app.config['SECRET_KEY'] = '262044xx'  # Change this to a random secret key
 
 # Configure Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Replace with your SMTP server
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
-app.config['MAIL_PASSWORD'] = 'liujhsoaqrcrllnr'  # Replace with your email password
-app.config['MAIL_DEFAULT_SENDER'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Replace with your SMTP server
+# app.config['MAIL_PORT'] = 587
+# app.config['MAIL_USE_TLS'] = True
+# app.config['MAIL_USERNAME'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
+# app.config['MAIL_PASSWORD'] = 'liujhsoaqrcrllnr'  # Replace with your email password
+# app.config['MAIL_DEFAULT_SENDER'] = 'deepak.s.ashta@gmail.com'  # Replace with your email
 
-mail = Mail(app)
+# mail = Mail(app)
 
 def get_default_device():
     """Pick GPU if available, else CPU"""
@@ -327,22 +327,22 @@ def upload():
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        subject = request.form['subject']
-        message = request.form['message']
+    # if request.method == 'POST':
+    #     name = request.form['name']
+    #     email = request.form['email']
+    #     subject = request.form['subject']
+    #     message = request.form['message']
         
-        try:
-            msg = Message(subject,
-                          recipients=['deepak.s.ashta@gmail.com'])  # Replace with your email
-            msg.body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
-            mail.send(msg)
-            flash('Your message has been sent successfully!', 'success')
-        except Exception as e:
-            flash('An error occurred while sending your message. Please try again later.', 'error')
+    #     try:
+    #         msg = Message(subject,
+    #                       recipients=['deepak.s.ashta@gmail.com'])  # Replace with your email
+    #         msg.body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+    #         mail.send(msg)
+    #         flash('Your message has been sent successfully!', 'success')
+    #     except Exception as e:
+    #         flash('An error occurred while sending your message. Please try again later.', 'error')
         
-        return redirect(url_for('contact'))
+    #     return redirect(url_for('contact'))
     
     return render_template('contact.html')
 
